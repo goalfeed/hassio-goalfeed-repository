@@ -1,5 +1,5 @@
 ARG BUILD_FROM
-ARG BUILD_ARCH
+ARG BUILD_ARCH=amd64
 
 FROM $BUILD_FROM
 
@@ -14,14 +14,15 @@ RUN case "${BUILD_ARCH}" in \
     aarch64)   ARCH="arm64" ;; \
     amd64)     ARCH="amd64" ;; \
     i386)      ARCH="386" ;; \
-    # *)         echo "Unsupported architecture ${BUILD_ARCH}"; exit 1 ;; \
+    *)         ARCH="${BUILD_ARCH}" ;; \
     esac
 
 # Download the appropriate binary for the target architecture
-ADD https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${GOALFEED_VERSION}_linux_${BUILD_ARCH}.tar.gz /tmp/
+ADD https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz /tmp/
 
 # Extract the binary and give it execute permissions
-RUN tar -xzf /tmp/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz -C / && \
+RUN \
+    tar -xzf /tmp/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz -C / && \
     rm /tmp/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz && \
     chmod +x /goalfeed
 
