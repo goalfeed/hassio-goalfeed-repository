@@ -1,24 +1,22 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-ARG BUILD_ARCH=amd64
 # Set the version of the goalfeed binary you want to fetch
 ARG GOALFEED_VERSION=v0.0.12
 
-RUN echo $BUILD_ARCH
-# Map BUILD_ARCH to the corresponding binary name
-RUN case "${BUILD_ARCH}" in \
-    armhf)     ARCH="armv6" ;; \
-    aarch64)   ARCH="arm64" ;; \
-    i386)      ARCH="386" ;; \
-    *)         ARCH="${BUILD_ARCH}" ;; \
-    esac
 
-RUN echo $ARCH
-
-RUN curl -J -L -o /tmp/goalfeed.tar.gz https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz && \
+RUN ARCH=$(uname -m) && \
+    FILE_VERSION=${GOALFEED_VERSION#v} && \
+    case "${ARCH}" in \
+    armv6l)    BINARY_ARCH="armv6" ;; \
+    armv7l)    BINARY_ARCH="armv7" ;; \
+    aarch64)   BINARY_ARCH="arm64" ;; \
+    x86_64)    BINARY_ARCH="amd64" ;; \
+    i686)      BINARY_ARCH="386" ;; \
+    *)         BINARY_ARCH=$ARCH ;; \
+    esac && \
+    echo https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
+    wget -O /tmp/goalfeed.tar.gz https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
     tar -xzf /tmp/goalfeed.tar.gz -C / && \
     rm /tmp/goalfeed.tar.gz && \
     chmod +x /goalfeed
