@@ -10,7 +10,7 @@ arch:
   - amd64
   - i386
 init: false
-image: ghcr.io/goalfeed/hassio-{arch}-goalfeed:{version}
+# image: ghcr.io/goalfeed/hassio-{arch}-goalfeed:{version}
 homeassistant_api: true
 options:
   nhl_teams: ""
