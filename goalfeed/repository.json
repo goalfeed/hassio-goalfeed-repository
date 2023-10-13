@@ -1,0 +1,6 @@
+{
+  "name": "Goalfeed Addon Repository",
+  "udev": true,
+  "url": "https://github.com/goalfeed/hassio-goalfeed-repository",
+  "maintainer": "craigjmidwinter"
+}
