@@ -10,6 +10,7 @@ arch:
   - amd64
   - i386
 init: false
+
 homeassistant_api: true
 options:
   nhl_teams: ""
