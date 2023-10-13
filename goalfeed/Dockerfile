@@ -2,7 +2,7 @@ ARG BUILD_FROM
 FROM $BUILD_FROM
 
 # Set the version of the goalfeed binary you want to fetch
-ARG GOALFEED_VERSION=v0.0.12
+ARG GOALFEED_VERSION=v0.0.14
 
 
 RUN ARCH=$(uname -m) && \
@@ -19,9 +19,8 @@ RUN ARCH=$(uname -m) && \
     wget -O /tmp/goalfeed.tar.gz https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
     tar -xzf /tmp/goalfeed.tar.gz -C / && \
     rm /tmp/goalfeed.tar.gz && \
-    chmod +x /goalfeed
+    chmod +x ./goalfeed
 
 COPY run.sh /
 RUN chmod a+x /run.sh
-# CMD ["ls"]
 CMD ["./run.sh"]

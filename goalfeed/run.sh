@@ -1,27 +1,24 @@
 #!/command/with-contenv bashio
 
 # Initialize command variable
-CMD="/goalfeed"
-echo $CMD
-which bashio
+CMD="./goalfeed"
 sanitize_input() {
     echo "$1" | grep -oE '\b[a-zA-Z0-9]{2,3}\b' | paste -sd, -
 }
 
-# Check if mlb_teams is set in the configuration
-MLB_TEAMS=$(bashio::config 'mlb_teams')
-# Sanitize the input
-MLB_TEAMS=$(sanitize_input "$MLB_TEAMS")
-if [[ ! -z "$MLB_TEAMS" ]]; then
+# Check if mlb_teams has a value in the configuration
+if bashio::config.has_value 'mlb_teams'; then
+    MLB_TEAMS=$(bashio::config 'mlb_teams')
+    # Sanitize the input
+    MLB_TEAMS=$(sanitize_input "$MLB_TEAMS")
     CMD+=" --mlb $MLB_TEAMS"
 fi
 
-# Check if nhl_teams is set in the configuration
-NHL_TEAMS=$(bashio::config 'nhl_teams')
-# Sanitize the input
-NHL_TEAMS=$(sanitize_input "$NHL_TEAMS")
-echo $NHL_TEAMS
-if [[ ! -z "$NHL_TEAMS" ]]; then
+# Check if nhl_teams has a value in the configuration
+if bashio::config.has_value 'nhl_teams'; then
+    NHL_TEAMS=$(bashio::config 'nhl_teams')
+    # Sanitize the input
+    NHL_TEAMS=$(sanitize_input "$NHL_TEAMS")
     CMD+=" --nhl $NHL_TEAMS"
 fi
 
