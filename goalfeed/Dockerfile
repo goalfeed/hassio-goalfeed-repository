@@ -6,6 +6,7 @@ FROM $BUILD_FROM
 # Set the version of the goalfeed binary you want to fetch
 ARG GOALFEED_VERSION=v0.0.12
 
+RUN echo $BUILD_ARCH
 # Map BUILD_ARCH to the corresponding binary name
 RUN case "${BUILD_ARCH}" in \
     armhf)     ARCH="armv6" ;; \
