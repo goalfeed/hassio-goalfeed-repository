@@ -1,0 +1,19 @@
+name: Goalfeed
+version: "1.0.2"
+slug: goalfeed
+description: Goalfeed
+url: "https://github.com/goalfeed/hassio-goalfeed-repository/tree/main/goalfeed"
+arch:
+  - armhf
+  - armv7
+  - aarch64
+  - amd64
+  - i386
+init: false
+homeassistant_api: true
+options:
+  nhl_teams: ""
+  mlb_teams: ""
+schema:
+  mlb_teams: "str?"
+  nhl_teams: "str?"
