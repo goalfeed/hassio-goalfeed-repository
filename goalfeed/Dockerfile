@@ -23,5 +23,5 @@ RUN ARCH=$(uname -m) && \
 
 COPY run.sh /
 RUN chmod a+x /run.sh
-
+# CMD ["ls"]
 CMD ["./run.sh"]

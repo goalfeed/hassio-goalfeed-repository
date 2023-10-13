@@ -2,7 +2,8 @@
 
 # Initialize command variable
 CMD="/goalfeed"
-
+echo $CMD
+which bashio
 sanitize_input() {
     echo "$1" | grep -oE '\b[a-zA-Z0-9]{2,3}\b' | paste -sd, -
 }
