@@ -87,7 +87,7 @@ jobs:
 
       - name: Get information
         id: info
-        uses: home-assistant/actions/helpers/info@main
+        uses: home-assistant/actions/helpers/info@master
         with:
           path: "./${{ matrix.addon }}"
 
@@ -121,7 +121,7 @@ jobs:
 
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@main
+        uses: home-assistant/builder@master
         env:
           CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
         with:
