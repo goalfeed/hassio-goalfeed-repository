@@ -74,7 +74,6 @@ jobs:
     if: ${{ needs.check-addon-changes.outputs.changedAddons != '[]' }}
     needs: [check-addon-changes, make-executable]
     runs-on: ubuntu-latest
-    environment: CR_PAT
     name: Build ${{ matrix.arch }} ${{ matrix.addon }} add-on
     strategy:
       matrix:

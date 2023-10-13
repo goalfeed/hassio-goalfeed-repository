@@ -1,8 +1,9 @@
 ARG BUILD_FROM
-ARG BUILD_ARCH=amd64
-
 FROM $BUILD_FROM
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ARG BUILD_ARCH=amd64
 # Set the version of the goalfeed binary you want to fetch
 ARG GOALFEED_VERSION=v0.0.12
 
