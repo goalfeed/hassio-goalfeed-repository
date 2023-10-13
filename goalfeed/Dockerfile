@@ -18,7 +18,7 @@ RUN case "${BUILD_ARCH}" in \
     esac
 
 # Download the appropriate binary for the target architecture
-ADD https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz /tmp/
+ADD https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${GOALFEED_VERSION}_linux_${BUILD_ARCH}.tar.gz /tmp/
 
 # Extract the binary and give it execute permissions
 RUN tar -xzf /tmp/goalfeed_${GOALFEED_VERSION}_linux_${ARCH}.tar.gz -C / && \
