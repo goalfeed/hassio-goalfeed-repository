@@ -10,7 +10,7 @@ arch:
   - amd64
   - i386
 init: false
-image: ghcr.io/goalfeed/hassio-{arch}-goalfeed:{version}
+image: ghcr.io/goalfeed/hassio-{arch}-goalfeed
 homeassistant_api: true
 hassio_api: true
 options:
