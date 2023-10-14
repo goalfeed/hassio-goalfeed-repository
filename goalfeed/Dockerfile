@@ -2,7 +2,7 @@ ARG BUILD_FROM
 FROM $BUILD_FROM
 
 # Set the version of the goalfeed binary you want to fetch
-ARG GOALFEED_VERSION=v0.0.14
+ARG GOALFEED_VERSION=v0.0.15
 
 
 RUN ARCH=$(uname -m) && \

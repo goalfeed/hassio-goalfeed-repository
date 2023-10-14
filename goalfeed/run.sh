@@ -2,6 +2,8 @@
 
 # Initialize command variable
 CMD="./goalfeed"
+
+
 sanitize_input() {
     echo "$1" | grep -oE '\b[a-zA-Z0-9]{2,3}\b' | paste -sd, -
 }
@@ -21,6 +23,8 @@ if bashio::config.has_value 'nhl_teams'; then
     NHL_TEAMS=$(sanitize_input "$NHL_TEAMS")
     CMD+=" --nhl $NHL_TEAMS"
 fi
+
+export SUPERVISOR_API=http://supervisor
 
 echo $CMD
 # Execute the command
