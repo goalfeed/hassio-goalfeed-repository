@@ -16,6 +16,8 @@ hassio_api: true
 options:
   nhl_teams: ""
   mlb_teams: ""
+  test_goals: false
 schema:
   mlb_teams: "str?"
   nhl_teams: "str?"
+  test_goals: "bool"

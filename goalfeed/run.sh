@@ -24,6 +24,10 @@ if bashio::config.has_value 'nhl_teams'; then
     CMD+=" --nhl $NHL_TEAMS"
 fi
 
+if bashio::config.true 'test_goals'; then
+    CMD+=" --test-goals"
+fi
+
 export SUPERVISOR_API=http://supervisor
 
 echo $CMD
