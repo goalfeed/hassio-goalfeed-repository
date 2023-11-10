@@ -71,7 +71,7 @@ jobs:
           path: "./${{ matrix.addon }}"
 
   build:
-    # if: ${{ needs.check-addon-changes.outputs.changedAddons != '[]' }}
+    if: ${{ needs.check-addon-changes.outputs.changedAddons != '[]' }}
     needs: [check-addon-changes, make-executable]
     runs-on: ubuntu-latest
     name: Build ${{ matrix.arch }} ${{ matrix.addon }} add-on

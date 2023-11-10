@@ -2,7 +2,7 @@
 name: Goalfeed
 version: "1.0.22"
 slug: goalfeed
-description: A service that will provide "goal" events within Home Assistant whenever your favourite MLB or NHL team scores
+description: A service that will provide "goal" events within Home Assistant whenever your favourite MLB or NHL team scores. Updated for the new NHL API
 url: "https://github.com/goalfeed/hassio-goalfeed-repository/tree/main/goalfeed"
 arch:
   - armhf
