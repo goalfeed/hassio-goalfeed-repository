@@ -16,8 +16,8 @@ RUN ARCH=$(uname -m) && \
     i686)      BINARY_ARCH="386" ;; \
     *)         BINARY_ARCH=$ARCH ;; \
     esac && \
-    echo "https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz" && \
-    wget --progress=dot:giga -O /tmp/goalfeed.tar.gz "https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz" && \
+    echo https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
+    wget --progress=dot:giga -O /tmp/goalfeed.tar.gz https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
     tar -xzf /tmp/goalfeed.tar.gz -C / && \
     rm /tmp/goalfeed.tar.gz && \
     chmod +x ./goalfeed
