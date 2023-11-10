@@ -1,8 +1,9 @@
 ARG BUILD_FROM
+# hadolint ignore=DL3006
 FROM $BUILD_FROM
 
 # Set the version of the goalfeed binary you want to fetch
-ARG GOALFEED_VERSION=v1.0.21
+ARG GOALFEED_VERSION=v1.0.22
 
 
 RUN ARCH=$(uname -m) && \
@@ -15,8 +16,8 @@ RUN ARCH=$(uname -m) && \
     i686)      BINARY_ARCH="386" ;; \
     *)         BINARY_ARCH=$ARCH ;; \
     esac && \
-    echo https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
-    wget -O /tmp/goalfeed.tar.gz https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz && \
+    echo "https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz" && \
+    wget --progress=dot:giga -O /tmp/goalfeed.tar.gz "https://github.com/goalfeed/goalfeed/releases/download/${GOALFEED_VERSION}/goalfeed_${FILE_VERSION}_linux_${BINARY_ARCH}.tar.gz" && \
     tar -xzf /tmp/goalfeed.tar.gz -C / && \
     rm /tmp/goalfeed.tar.gz && \
     chmod +x ./goalfeed
