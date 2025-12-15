@@ -8,7 +8,7 @@ The Home Assistant GoalFeed add-on provides real-time goal updates for NHL and M
 - **Web Interface**: Interactive scoreboard and team management UI
 - **REST API**: Programmatic access to games, events, and team data
 - **WebSocket Support**: Real-time updates via WebSocket connection
-- **Multi-League Support**: NHL, MLB, and CFL teams
+- **Multi-League Support**: NHL and MLB teams
 
 ## Installation
 
