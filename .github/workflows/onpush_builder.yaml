@@ -155,7 +155,7 @@ jobs:
         with:
           args: |
             --${{ matrix.arch }}
-            --target ${{ matrix.addon }}
+            --target /data/${{ matrix.addon }}
             --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
             --docker-hub "ghcr.io/${{ github.repository_owner }}"
             --addon
