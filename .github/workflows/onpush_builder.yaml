@@ -140,6 +140,14 @@ jobs:
           echo ""
           echo "Checking for build.json:"
           ls -la "${{ matrix.addon }}/build.json" 2>/dev/null && echo "✓ build.json exists" || echo "✗ build.json not found"
+          echo ""
+          echo "Checking what will be mounted at /data:"
+          pwd
+          ls -la
+          echo ""
+          echo "Expected target path: /data/${{ matrix.addon }}"
+          echo "Files that should be at target:"
+          ls -la "${{ matrix.addon }}/" | grep -E "(config|build)\.json"
 
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
@@ -147,7 +155,7 @@ jobs:
         with:
           args: |
             --${{ matrix.arch }}
-            --target ${{ matrix.addon }}
+            --target /data/${{ matrix.addon }}
             --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
             --docker-hub "ghcr.io/${{ github.repository_owner }}"
             --addon
