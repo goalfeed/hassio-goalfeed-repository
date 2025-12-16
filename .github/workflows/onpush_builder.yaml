@@ -102,7 +102,7 @@ jobs:
              echo "build_arch=true" >> $GITHUB_OUTPUT;
              # shellcheck disable=SC2129
              echo "image=$(echo ${{ steps.info.outputs.image }} | cut -d'/' -f3)" >> $GITHUB_OUTPUT;
-             if [[ -z "$HEAD" ]] && [[ "${{ github.event_name }}" == "push" ]]; then
+             if [[ -z "$HEAD" ]] && [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
                  # shellcheck disable=SC2129
                  echo "BUILD_ARGS=" >> $GITHUB_ENV;
              fi
