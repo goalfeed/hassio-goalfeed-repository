@@ -1,6 +1,6 @@
 ---
 name: Goalfeed
-version: "1.0.31"
+version: "1.0.31-1"
 slug: goalfeed
 description: A service that will provide "goal" events within Home Assistant whenever your favourite MLB or NHL team scores. 
 url: "https://github.com/goalfeed/hassio-goalfeed-repository/tree/main/goalfeed"
@@ -14,6 +14,14 @@ init: false
 image: ghcr.io/goalfeed/hassio-{arch}-goalfeed
 homeassistant_api: true
 hassio_api: true
+ingress: true
+ingress_port: 8080
+panel_icon: mdi:hockey-sticks
+webui: "http://[HOST]:[PORT:8080]"
+ports:
+  8080/tcp: 8080
+ports_description:
+  8080/tcp: Web UI and API
 options:
   nhl_teams: ""
   mlb_teams: ""
