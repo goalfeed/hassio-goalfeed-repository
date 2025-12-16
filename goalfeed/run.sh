@@ -1,7 +1,7 @@
 #!/command/with-contenv bashio
 
 # Initialize command variable
-CMD="./goalfeed --web --web-port 8080"
+CMD="./goalfeed"
 
 
 sanitize_input() {
