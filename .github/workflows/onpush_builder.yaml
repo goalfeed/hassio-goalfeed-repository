@@ -156,7 +156,7 @@ jobs:
             -v /var/run/docker.sock:/var/run/docker.sock:ro \
             -v ~/.docker:/root/.docker \
             -v ${{ github.workspace }}:/data \
-            ghcr.io/home-assistant/${{ matrix.arch }}-builder:2025.11.0 \
+            ghcr.io/home-assistant/amd64-builder:2025.11.0 \
             --${{ matrix.arch }} \
             --target /data/${{ matrix.addon }} \
             --image "hassio-${{matrix.arch}}-${{matrix.addon}}" \
