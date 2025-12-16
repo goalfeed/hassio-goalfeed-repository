@@ -1,6 +1,6 @@
 # Home Assistant Community Add-on: GoalFeed
 
-The Home Assistant GoalFeed add-on provides real-time goal updates for NHL and MLB games, featuring a web interface and REST API for monitoring your favorite teams.
+The Home Assistant GoalFeed add-on provides real-time goal updates for NHL and MLB games, featuring a web interface and REST API for monitoring your favourite teams.
 
 ## Features
 
