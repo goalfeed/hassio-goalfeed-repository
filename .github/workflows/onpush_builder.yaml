@@ -137,6 +137,9 @@ jobs:
           echo ""
           echo "Validating config.json is valid JSON..."
           jq '.' "${{ matrix.addon }}/config.json" > /dev/null && echo "✓ config.json is valid JSON" || echo "✗ config.json is invalid JSON"
+          echo ""
+          echo "Checking for build.json:"
+          ls -la "${{ matrix.addon }}/build.json" 2>/dev/null && echo "✓ build.json exists" || echo "✗ build.json not found"
 
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
