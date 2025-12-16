@@ -12,6 +12,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   check-addon-changes:
@@ -105,6 +108,10 @@ jobs:
              if [[ -z "$HEAD" ]] && [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
                  # shellcheck disable=SC2129
                  echo "BUILD_ARGS=" >> $GITHUB_ENV;
+             else
+                 # For PRs and other events, use --test to prevent pushing to registry
+                 # shellcheck disable=SC2129
+                 echo "BUILD_ARGS=--test" >> $GITHUB_ENV;
              fi
            else
              echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build";
