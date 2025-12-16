@@ -149,17 +149,33 @@ jobs:
           echo "Files that should be at target:"
           ls -la "${{ matrix.addon }}/" | grep -E "(config|build)\.json"
 
-      - name: Build ${{ matrix.addon }} add-on
+      - name: Build ${{ matrix.addon }} add-on (Direct Docker)
         if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@2025.11.0
-        with:
-          args: |
-            --${{ matrix.arch }}
-            --target /data/${{ matrix.addon }}
-            --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
-            --docker-hub "ghcr.io/${{ github.repository_owner }}"
-            --addon
+        run: |
+          docker run --rm --privileged \
+            -v /var/run/docker.sock:/var/run/docker.sock:ro \
+            -v ~/.docker:/root/.docker \
+            -v ${{ github.workspace }}:/data \
+            ghcr.io/home-assistant/${{ matrix.arch }}-builder:2025.11.0 \
+            --${{ matrix.arch }} \
+            --target /data/${{ matrix.addon }} \
+            --image "hassio-${{matrix.arch}}-${{matrix.addon}}" \
+            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
+            --addon \
             ${{ env.BUILD_ARGS }}
+
+      # Temporarily disabled to test direct Docker approach
+      # - name: Build ${{ matrix.addon }} add-on (GitHub Action)
+      #   if: steps.check.outputs.build_arch == 'true'
+      #   uses: home-assistant/builder@2025.11.0
+      #   with:
+      #     args: |
+      #       --${{ matrix.arch }}
+      #       --target /data/${{ matrix.addon }}
+      #       --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
+      #       --docker-hub "ghcr.io/${{ github.repository_owner }}"
+      #       --addon
+      #       ${{ env.BUILD_ARGS }}
 
   make-changelog:
     if: ${{ needs.check-addon-changes.outputs.changedAddons != '[]' }}
