@@ -12,6 +12,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   check-addon-changes:
@@ -79,7 +82,7 @@ jobs:
     strategy:
       matrix:
         addon: ${{ fromJSON(needs.check-addon-changes.outputs.changedAddons) }}
-        arch: ["armhf", "armv7", "aarch64", "amd64", "i386"]
+        arch: ["aarch64", "amd64"]
 
     steps:
       - name: Check out repository
@@ -105,6 +108,10 @@ jobs:
              if [[ -z "$HEAD" ]] && [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
                  # shellcheck disable=SC2129
                  echo "BUILD_ARGS=" >> $GITHUB_ENV;
+             else
+                 # For PRs and other events, use --test to prevent pushing to registry
+                 # shellcheck disable=SC2129
+                 echo "BUILD_ARGS=--test" >> $GITHUB_ENV;
              fi
            else
              echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build";
@@ -119,17 +126,56 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build ${{ matrix.addon }} add-on
+      - name: Verify config files before build
         if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@master
-        with:
-          args: |
-            --${{ matrix.arch }}
-            --target /data/${{ matrix.addon }}
-            --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
-            --docker-hub "ghcr.io/${{ github.repository_owner }}"
-            --addon
+        run: |
+          echo "Checking for config files in ${{ matrix.addon }} directory..."
+          ls -la "${{ matrix.addon }}/"
+          echo ""
+          echo "Contents of config.json:"
+          cat "${{ matrix.addon }}/config.json"
+          echo ""
+          echo "Validating config.json is valid JSON..."
+          jq '.' "${{ matrix.addon }}/config.json" > /dev/null && echo "✓ config.json is valid JSON" || echo "✗ config.json is invalid JSON"
+          echo ""
+          echo "Checking for build.json:"
+          ls -la "${{ matrix.addon }}/build.json" 2>/dev/null && echo "✓ build.json exists" || echo "✗ build.json not found"
+          echo ""
+          echo "Checking what will be mounted at /data:"
+          pwd
+          ls -la
+          echo ""
+          echo "Expected target path: /data/${{ matrix.addon }}"
+          echo "Files that should be at target:"
+          ls -la "${{ matrix.addon }}/" | grep -E "(config|build)\.json"
+
+      - name: Build ${{ matrix.addon }} add-on (Direct Docker)
+        if: steps.check.outputs.build_arch == 'true'
+        run: |
+          docker run --rm --privileged \
+            -v /var/run/docker.sock:/var/run/docker.sock:ro \
+            -v ~/.docker:/root/.docker \
+            -v ${{ github.workspace }}:/data \
+            ghcr.io/home-assistant/amd64-builder:2025.11.0 \
+            --${{ matrix.arch }} \
+            --target /data/${{ matrix.addon }} \
+            --image "hassio-${{matrix.arch}}-${{matrix.addon}}" \
+            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
+            --addon \
             ${{ env.BUILD_ARGS }}
+
+      # Temporarily disabled to test direct Docker approach
+      # - name: Build ${{ matrix.addon }} add-on (GitHub Action)
+      #   if: steps.check.outputs.build_arch == 'true'
+      #   uses: home-assistant/builder@2025.11.0
+      #   with:
+      #     args: |
+      #       --${{ matrix.arch }}
+      #       --target /data/${{ matrix.addon }}
+      #       --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
+      #       --docker-hub "ghcr.io/${{ github.repository_owner }}"
+      #       --addon
+      #       ${{ env.BUILD_ARGS }}
 
   make-changelog:
     if: ${{ needs.check-addon-changes.outputs.changedAddons != '[]' }}
