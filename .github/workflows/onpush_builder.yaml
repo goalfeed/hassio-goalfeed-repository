@@ -126,6 +126,18 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Verify config files before build
+        if: steps.check.outputs.build_arch == 'true'
+        run: |
+          echo "Checking for config files in ${{ matrix.addon }} directory..."
+          ls -la "${{ matrix.addon }}/"
+          echo ""
+          echo "Contents of config.json:"
+          cat "${{ matrix.addon }}/config.json"
+          echo ""
+          echo "Validating config.json is valid JSON..."
+          jq '.' "${{ matrix.addon }}/config.json" > /dev/null && echo "✓ config.json is valid JSON" || echo "✗ config.json is invalid JSON"
+
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
         uses: home-assistant/builder@master
