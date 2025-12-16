@@ -1,7 +1,8 @@
 #!/command/with-contenv bashio
+# shellcheck shell=bash
 
 # Initialize command variable
-CMD="./goalfeed"
+CMD="./goalfeed --web --web-port 8080"
 
 
 sanitize_input() {
@@ -30,6 +31,6 @@ fi
 
 export SUPERVISOR_API=http://supervisor
 
-echo $CMD
+echo "$CMD"
 # Execute the command
 $CMD
