@@ -149,13 +149,37 @@ jobs:
           echo "Files that should be at target:"
           ls -la "${{ matrix.addon }}/" | grep -E "(config|build)\.json"
 
+      - name: Debug builder container filesystem
+        if: steps.check.outputs.build_arch == 'true'
+        run: |
+          echo "=== Debugging builder container filesystem ==="
+          docker run --rm \
+            -v /home/runner/work/hassio-goalfeed-repository/hassio-goalfeed-repository:/data \
+            ghcr.io/home-assistant/amd64-builder:latest \
+            sh -c "
+              echo 'Current directory:'
+              pwd
+              echo ''
+              echo 'Contents of /data:'
+              ls -la /data
+              echo ''
+              echo 'Contents of /data/${{ matrix.addon }}:'
+              ls -la /data/${{ matrix.addon }} || echo 'Directory not found!'
+              echo ''
+              echo 'Looking for config.json:'
+              ls -la /data/${{ matrix.addon }}/config.json || echo 'config.json not found!'
+              echo ''
+              echo 'Looking for build.json:'
+              ls -la /data/${{ matrix.addon }}/build.json || echo 'build.json not found!'
+            "
+
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
         uses: home-assistant/builder@master
         with:
           args: |
             --${{ matrix.arch }}
-            --target ${{ matrix.addon }}
+            --target /data/${{ matrix.addon }}
             --image "hassio-${{matrix.arch}}-${{matrix.addon}}"
             --docker-hub "ghcr.io/${{ github.repository_owner }}"
             --addon
