@@ -5,8 +5,11 @@
   "description": "A service that will provide \"goal\" events within Home Assistant whenever your favourite MLB or NHL team scores.",
   "url": "https://github.com/goalfeed/hassio-goalfeed-repository/tree/main/goalfeed",
   "arch": [
+    "armhf",
+    "armv7",
     "aarch64",
-    "amd64"
+    "amd64",
+    "i386"
   ],
   "init": false,
   "image": "ghcr.io/goalfeed/hassio-{arch}-goalfeed",
