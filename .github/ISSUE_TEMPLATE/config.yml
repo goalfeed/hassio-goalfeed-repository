@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Goalfeed service bugs & feature requests
+    url: https://github.com/goalfeed/goalfeed/issues
+    about: >
+      Goal detection, leagues, the web UI, the REST/WebSocket API, and Home Assistant
+      event content all live in the main goalfeed/goalfeed repository — please file
+      issues about those there, not here.
+  - name: Goalfeed documentation & general info
+    url: https://goalfeed.ca
+    about: Installation guides, configuration reference, and troubleshooting docs.
