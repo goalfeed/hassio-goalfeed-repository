@@ -1,0 +1,67 @@
+name: Bug report
+description: Something in the Goalfeed Home Assistant add-on isn't working as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report.
+
+        **Is this actually about this add-on?** This repository only covers packaging the
+        Goalfeed service as a Home Assistant add-on (its manifest, Dockerfile, and
+        documentation). If your issue is about a goal not firing, a league not being
+        supported, the web UI, or the API — that almost always belongs in
+        [goalfeed/goalfeed](https://github.com/goalfeed/goalfeed/issues) instead. Please
+        file it there so it reaches the right maintainer context.
+  - type: input
+    id: addon-version
+    attributes:
+      label: Add-on version
+      description: Found on the add-on's Info tab in Home Assistant.
+      placeholder: e.g. 1.0.31-2
+    validations:
+      required: true
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      description: Settings → About, or Settings → System → General.
+      placeholder: e.g. 2026.1.0
+    validations:
+      required: true
+  - type: input
+    id: arch
+    attributes:
+      label: Architecture
+      description: Settings → System → Hardware, or Settings → About.
+      placeholder: e.g. aarch64, amd64
+    validations:
+      required: true
+  - type: textarea
+    id: leagues
+    attributes:
+      label: Leagues / teams configured
+      description: What's in the add-on's Configuration tab (nhl_teams, mlb_teams, test_goals).
+      placeholder: |
+        nhl_teams: WPG,TOR
+        mlb_teams: TOR
+        test_goals: false
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what actually happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Add-on logs
+      description: >
+        Copy the relevant portion of the add-on's Log tab in Home Assistant
+        (Settings → Add-ons → Goalfeed → Log). Redact any access tokens first.
+      render: shell
+    validations:
+      required: false
