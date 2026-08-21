@@ -12,14 +12,13 @@ changes into a Home Assistant event. It also ships a small web UI (scoreboard, t
 manager, event feed) and a REST/WebSocket API, reachable from the Home Assistant sidebar
 or directly on port 8080.
 
-**Leagues configurable through this add-on's Configuration tab today: NHL and MLB.**
-The underlying Goalfeed service also has goal detection for CFL and NFL, but the add-on's
-Configuration UI doesn't expose options for those two leagues yet — see
-[Limitations](#limitations-and-known-issues) below if you want to watch a CFL or NFL team.
+**Leagues configurable through this add-on's Configuration tab today: NHL and MLB**, both
+stable and fully supported. CFL and NFL client code exists in the underlying Goalfeed
+service, but neither league is listed as supported — live testing found both leagues'
+score tracking broken, so no goal event fires for either today. See
+[Limitations](#limitations-and-known-issues) below for details.
 
-IIHF data is reachable through Goalfeed's web API (schedules, upcoming games, team lookups)
-but is **not** wired into the live goal-detection loop, so no Home Assistant event fires
-for IIHF games. There is no EPL/soccer support of any kind.
+There is no EPL/soccer support of any kind.
 
 ## Installation
 
@@ -80,8 +79,10 @@ team, so you can build and test automations without waiting for a real game. Tur
 off once you're done testing — remember to restart the add-on after changing it.
 
 **Watching CFL or NFL teams:** the add-on's Configuration tab has no `cfl_teams` or
-`nfl_teams` option today, even though the Goalfeed binary itself supports both leagues.
-There is currently no supported way to watch those leagues through this add-on's UI.
+`nfl_teams` option today. Client code for both leagues exists in the Goalfeed binary, but
+neither is listed as supported — live testing found both leagues' score tracking broken,
+so no goal event fires for either one regardless of how you configure it. See
+[Limitations](#limitations-and-known-issues).
 
 ## What fires, and what it looks like
 
@@ -183,11 +184,11 @@ you should not expose it directly to the internet.
 
 ## Limitations and known issues
 
-- **Only NHL and MLB are configurable through this add-on's Configuration tab.** The
-  Goalfeed binary itself also detects CFL and NFL goals, but this add-on doesn't yet
-  expose `cfl_teams`/`nfl_teams` options.
-- **IIHF is API-only.** Schedule/team/upcoming-game data is available through the web API,
-  but no live goal events fire for IIHF games.
+- **Only NHL and MLB are configurable through this add-on's Configuration tab, and only
+  NHL and MLB are listed as supported.** CFL and NFL client code exists in the Goalfeed
+  binary, but live testing found both leagues' score tracking broken. Fixes are in
+  progress; neither league is listed as supported until one is verified working against
+  a live game.
 - **There is no EPL/soccer support.** It exists only as an internal, unused identifier —
   never a real feature.
 - **Goal detection is a raw score diff.** A single high-scoring play (e.g. an NFL

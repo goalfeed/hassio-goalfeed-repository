@@ -25,8 +25,8 @@ In scope:
 Out of scope:
 - Home Assistant core/Supervisor itself — report those upstream to the
   [Home Assistant project](https://www.home-assistant.io/help/reporting_a_bug/).
-- The third-party, unofficial league APIs Goalfeed polls (NHL, MLB, NFL, CFL, IIHF,
-  Olympics) — Goalfeed doesn't control those services.
+- The third-party, unofficial league APIs Goalfeed polls (NHL, MLB, NFL, CFL) —
+  Goalfeed doesn't control those services.
 
 ## Known security posture
 

@@ -33,10 +33,11 @@ own documentation: [`goalfeed/DOCS.md`](goalfeed/DOCS.md) (also shown in the
 ## Which leagues can I configure?
 
 Through the add-on's Configuration UI, **NHL and MLB** teams are supported today
-(`nhl_teams`, `mlb_teams`, plus a `test_goals` toggle for testing automations). The
-underlying Goalfeed service also supports CFL and NFL, but the add-on doesn't yet expose
-options for those leagues in its Configuration tab — see [`goalfeed/DOCS.md`](goalfeed/DOCS.md#limitations)
-for details and workarounds.
+(`nhl_teams`, `mlb_teams`, plus a `test_goals` toggle for testing automations). CFL and
+NFL client code exists in the underlying Goalfeed service, but neither league is listed
+as supported — live testing found both leagues' score tracking broken, so no goal event
+fires for either today. See
+[`goalfeed/DOCS.md`](goalfeed/DOCS.md#limitations-and-known-issues) for details.
 
 ## Links
 
