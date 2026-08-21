@@ -1,65 +1,54 @@
-# Home Assistant Community Add-on: GoalFeed
+# Home Assistant Add-on: Goalfeed
 
-The Home Assistant GoalFeed add-on provides real-time goal updates for NHL and MLB games, featuring a web interface and REST API for monitoring your favourite teams.
+Goalfeed watches live games for the teams you care about and fires a Home Assistant
+event the moment something happens — a goal, a touchdown, a home run — so an automation
+can blow the goal horn and flash the lights in your team's colours.
 
-## Features
+## About
 
-- **Real-time Goal Events**: Automatic notifications when your teams score
-- **Web Interface**: Interactive scoreboard and team management UI
-- **REST API**: Programmatic access to games, events, and team data
-- **WebSocket Support**: Real-time updates via WebSocket connection
-- **Multi-League Support**: NHL and MLB teams
+Goalfeed polls the same unofficial, undocumented public score APIs your browser already
+talks to when you check the score (nothing scraped, nothing paid for), and turns score
+changes into a Home Assistant event. It also ships a small web UI (scoreboard, team
+manager, event feed) and a REST/WebSocket API, reachable from the Home Assistant sidebar
+or directly on port 8080.
+
+**Leagues configurable through this add-on's Configuration tab today: NHL and MLB**, both
+stable and fully supported. CFL and NFL client code exists in the underlying Goalfeed
+service, but neither league is listed as supported — live testing found both leagues'
+score tracking broken, so no goal event fires for either today. See
+[Limitations](#limitations-and-known-issues) below for details.
+
+There is no EPL/soccer support of any kind.
 
 ## Installation
 
-The installation of this add-on is similar to other Home Assistant add-ons.
+1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**, open the **⋮** menu in
+   the top right, choose **Repositories**, and add:
+   ```
+   https://github.com/goalfeed/hassio-goalfeed-repository
+   ```
+   (Or use the "Add repository to my Home Assistant" badge on the
+   [repository's README](https://github.com/goalfeed/hassio-goalfeed-repository) to do
+   this in one click.)
+2. Find **Goalfeed** in the Add-on Store and click **Install**.
+3. Switch to the **Configuration** tab, enter the team codes you want (see below), and
+   save.
+4. Start the add-on. It runs in web mode on port 8080 with the Home Assistant Supervisor
+   auto-detected — you do not need to set a Home Assistant URL or access token; the
+   add-on talks to Home Assistant directly through the Supervisor API.
+5. Check the **Log** tab to confirm it started cleanly.
 
-1. Navigate to the GoalFeed repository on GitHub.
-2. Click the "Clone or download" button and copy the repository URL.
-3. In your Home Assistant instance, go to the add-on store and add the repository URL.
-4. Find the GoalFeed add-on in the list and click "Install".
-5. Once installed in the configuration tab, enter the two or three letter code for the teams you want to get events for (ie. WPG, TOR, NYY)
-6. Start the "Goalfeed" add-on and check the logs to ensure everything is running smoothly.
+## Accessing the web UI
 
-## Accessing the Web Interface
+Once the add-on is running, open its web interface either:
 
-After starting the add-on, you can access the web interface in two ways:
+- from the Home Assistant **sidebar** — Goalfeed appears there via ingress, or
+- directly at `http://homeassistant.local:8080` (or your Home Assistant host's address).
 
-1. **Via Home Assistant Panel**: Click on the Goalfeed icon in the Home Assistant sidebar
-2. **Direct Access**: Navigate to port 8080 on your Home Assistant host
-
-The web interface provides:
-- Live scoreboard with real-time game updates
-- Team management for configuring which teams to monitor
-- Event feed showing recent goals and scores
-
-## API Documentation
-
-The add-on exposes a REST API on port 8080:
-
-- **API Base URL**: `http://[your-host]:8080/api`
-- **Swagger Documentation**: `http://[your-host]:8080/swagger/index.html`
-- **WebSocket**: `ws://[your-host]:8080/ws`
-
-### Key API Endpoints
-
-- `GET /api/games` - Get all active games
-- `GET /api/leagues` - Get league configurations
-- `POST /api/leagues` - Update team configurations
-- `GET /api/events` - Get recent goal events
-- `GET /api/teams` - Get available teams per league
+The web UI has a live scoreboard, a per-league team manager, an event feed, an
+application-log viewer, and a Home Assistant connection status panel.
 
 ## Configuration
-
-**Note**: _Remember to restart the add-on when the configuration is changed._
-
-### Configuration Options
-
-- **nhl_teams**: Comma-separated list of NHL team codes (e.g., "TOR,WPG,NYR")
-- **mlb_teams**: Comma-separated list of MLB team codes (e.g., "TOR,NYY,BOS")
-- **test_goals**: Enable test goals every minute for testing automations (default: false)
-
-### Example Configuration
 
 ```yaml
 nhl_teams: "TOR,WPG"
@@ -67,6 +56,159 @@ mlb_teams: "TOR,NYY"
 test_goals: false
 ```
 
-## Creating Automations
+### Option: `nhl_teams`
 
-You can create Home Assistant automations that trigger when your teams score. See the [GoalFeed wiki](https://github.com/goalfeed/goalfeed/wiki/Goal-Automation) for detailed automation examples.
+A comma-separated list of two-or-three-letter NHL team codes to watch, e.g. `TOR`, `WPG`,
+`MTL`. Leave empty to watch no NHL teams.
+
+### Option: `mlb_teams`
+
+A comma-separated list of two-or-three-letter MLB team codes to watch, e.g. `NYY`, `TOR`,
+`BOS`. Leave empty to watch no MLB teams.
+
+> **Note:** the underlying Goalfeed service supports a `*` wildcard to watch every team in
+> a league when configured through its own `config.yaml`/environment variables. This
+> add-on's `nhl_teams`/`mlb_teams` fields are filtered down to two-or-three-character
+> alphanumeric codes before being passed to Goalfeed, so `*` does not pass through — enter
+> explicit team codes here.
+
+### Option: `test_goals`
+
+When `true`, Goalfeed fires a synthetic `goal` event once a minute for every configured
+team, so you can build and test automations without waiting for a real game. Turn this
+off once you're done testing — remember to restart the add-on after changing it.
+
+**Watching CFL or NFL teams:** the add-on's Configuration tab has no `cfl_teams` or
+`nfl_teams` option today. Client code for both leagues exists in the Goalfeed binary, but
+neither is listed as supported — live testing found both leagues' score tracking broken,
+so no goal event fires for either one regardless of how you configure it. See
+[Limitations](#limitations-and-known-issues).
+
+## What fires, and what it looks like
+
+Every event Goalfeed sends to Home Assistant — real goals, period-start notices, and test
+goals alike — arrives as the **same Home Assistant event type: `goal`**. Filter your
+automations on the event data (`teamCode`, `leagueId`), not on the event type, since
+there's only one event type to trigger on.
+
+The event payload is a flattened JSON object with (at minimum) these fields:
+
+```json
+{
+  "id": "…",
+  "teamCode": "WPG",
+  "teamName": "Winnipeg Jets",
+  "opponentCode": "TOR",
+  "opponentName": "Toronto Maple Leafs",
+  "leagueId": 1,
+  "leagueName": "NHL",
+  "gameCode": "…",
+  "period": 2,
+  "gameState": { "home": { "...": "..." }, "away": { "...": "..." }, "status": "active" }
+}
+```
+
+Goal detection is a raw score diff, not a play-by-play feed: Goalfeed compares a watched
+team's last-seen score to its current score once a second and fires one `goal` event per
+point of increase. For NHL and MLB that's one event per goal or run, which is what you
+want. This matters if you ever configure a CFL or NFL team another way (see
+[Limitations](#limitations-and-known-issues)): a 7-point touchdown-plus-conversion fires
+**seven separate `goal` events** in the same tick, not one "touchdown" event.
+
+## Example automation
+
+A complete automation — goal horn plus a light flash — for the Winnipeg Jets:
+
+```yaml
+automation:
+  - alias: "Goalfeed - Jets score"
+    trigger:
+      - platform: event
+        event_type: goal
+        event_data:
+          teamCode: WPG
+    action:
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.living_room_speaker
+        data:
+          media_content_id: /local/sounds/goal_horn.mp3
+          media_content_type: music
+      - service: light.turn_on
+        target:
+          entity_id: light.living_room
+        data:
+          color_name: blue
+          flash: long
+      - delay: "00:00:03"
+      - service: light.turn_on
+        target:
+          entity_id: light.living_room
+        data:
+          color_name: white
+```
+
+Enable `test_goals` above and restart the add-on to trigger this automation once a minute
+without waiting for a real game.
+
+## API and WebSocket
+
+Goalfeed also runs a REST API, a WebSocket feed, and Swagger docs on the same port as the
+web UI (`8080` by default):
+
+- `GET /api/games` — currently active games
+- `GET /api/leagues` — current per-league watch configuration
+- `GET /api/events` — recent goal/score events
+- `GET /api/teams?leagueId=` — teams for a league
+- `ws://<host>:8080/ws` — real-time WebSocket stream
+- `http://<host>:8080/swagger/index.html` — full API reference
+
+There is no authentication on this API and CORS is wide open. This is fine behind Home
+Assistant ingress or on a trusted home network; see [SECURITY.md](../SECURITY.md) for why
+you should not expose it directly to the internet.
+
+## Troubleshooting
+
+- **No goal events are firing.** Confirm the team code is correct (two or three letters,
+  e.g. `WPG` not `Winnipeg`), that a game for that team is actually live, and that the add-on
+  has been restarted since the last configuration change. Enable `test_goals` to confirm
+  the Home Assistant event pipeline itself works, independent of any real game.
+- **The add-on can't reach Home Assistant.** This add-on auto-detects Home Assistant
+  through the Supervisor, so there's normally nothing to configure. Check the add-on log
+  and the web UI's Home Assistant status panel for connection errors.
+- **I configured a CFL or NFL team and nothing happens.** Expected — see
+  [Limitations](#limitations-and-known-issues); those leagues aren't exposed in this
+  add-on's Configuration UI yet.
+- **Still stuck?** Check the add-on's **Log** tab first, then open an issue — see
+  [Support](#support) for which repository to use.
+
+## Limitations and known issues
+
+- **Only NHL and MLB are configurable through this add-on's Configuration tab, and only
+  NHL and MLB are listed as supported.** CFL and NFL client code exists in the Goalfeed
+  binary, but live testing found both leagues' score tracking broken. Fixes are in
+  progress; neither league is listed as supported until one is verified working against
+  a live game.
+- **There is no EPL/soccer support.** It exists only as an internal, unused identifier —
+  never a real feature.
+- **Goal detection is a raw score diff.** A single high-scoring play (e.g. an NFL
+  touchdown plus conversion) can fire multiple `goal` events in quick succession rather
+  than one event describing the play. Debounce in your automation if this matters to you.
+- **The Home Assistant event type is always `goal`**, for real goals, period-start
+  notices, and test goals alike. Filter on `teamCode`/`leagueId` in your automation, not
+  on event type.
+- **All upstream sports data comes from unofficial, undocumented APIs** run by the
+  leagues/broadcasters themselves. Any of them can change shape or go away without
+  notice, and Goalfeed has no fallback when that happens.
+- **No authentication on the API, and CORS is wide open.** Keep this add-on behind Home
+  Assistant ingress / your home network — don't expose port 8080 to the internet.
+
+## Support
+
+- **Add-on packaging issues** (this repository, its `config.json`/`build.json`,
+  installation into Home Assistant, the Docker image) — open an issue at
+  [github.com/goalfeed/hassio-goalfeed-repository](https://github.com/goalfeed/hassio-goalfeed-repository/issues).
+- **Everything else** — incorrect goal detection, missing leagues, the web UI, the API,
+  Home Assistant event content — belongs to the main service and should be reported at
+  [github.com/goalfeed/goalfeed](https://github.com/goalfeed/goalfeed/issues).
+- General information and full documentation: [goalfeed.ca](https://goalfeed.ca)

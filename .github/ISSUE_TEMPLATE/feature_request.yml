@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an improvement to the Goalfeed Home Assistant add-on packaging.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion.
+
+        **Is this about the add-on, or the service?** This repository only covers how
+        Goalfeed is packaged and configured as a Home Assistant add-on (its manifest,
+        Configuration tab options, Dockerfile, documentation). Requests for new leagues,
+        API/WebSocket features, or web UI changes belong in
+        [goalfeed/goalfeed](https://github.com/goalfeed/goalfeed/issues) instead.
+
+        Examples that *do* belong here: exposing a new configuration option (e.g. CFL or
+        NFL team codes) in the add-on's Configuration tab, supporting an additional
+        architecture, or improving this repo's own documentation.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: What are you trying to do that the add-on doesn't currently support?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like to see change in the add-on's packaging or configuration?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds you're using today, or other approaches you considered.
+    validations:
+      required: false
