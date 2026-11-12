@@ -29,6 +29,13 @@ if bashio::config.true 'test_goals'; then
     CMD+=" --test-goals"
 fi
 
+# Hold back everything sent to Home Assistant so it lines up with a TV or
+# stream. Goalfeed has no flag for this; it reads the GOALFEED_* env var.
+# Goalfeed releases before this setting existed ignore it.
+if bashio::config.has_value 'broadcast_delay_seconds'; then
+    export GOALFEED_HOME_ASSISTANT_BROADCAST_DELAY_SECONDS="$(bashio::config 'broadcast_delay_seconds')"
+fi
+
 export SUPERVISOR_API=http://supervisor
 
 echo "$CMD"

@@ -24,11 +24,13 @@
   "options": {
     "nhl_teams": "",
     "mlb_teams": "",
-    "test_goals": false
+    "test_goals": false,
+    "broadcast_delay_seconds": 0
   },
   "schema": {
     "mlb_teams": "str?",
     "nhl_teams": "str?",
-    "test_goals": "bool"
+    "test_goals": "bool",
+    "broadcast_delay_seconds": "float(0,900)"
   }
 }

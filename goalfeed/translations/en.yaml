@@ -1,0 +1,15 @@
+configuration:
+  nhl_teams:
+    name: NHL teams
+    description: Comma-separated NHL team codes, for example TOR,WPG.
+  mlb_teams:
+    name: MLB teams
+    description: Comma-separated MLB team codes, for example TOR,NYY.
+  test_goals:
+    name: Test goals
+    description: Fire a test goal every minute, for building automations.
+  broadcast_delay_seconds:
+    name: Broadcast delay (seconds)
+    description: >-
+      Hold back goal events and sensor updates by this many seconds so they
+      line up with your TV or stream. 0 is off; the maximum is 900.

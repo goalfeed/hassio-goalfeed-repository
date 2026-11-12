@@ -58,6 +58,7 @@ The add-on exposes a REST API on port 8080:
 - **nhl_teams**: Comma-separated list of NHL team codes (e.g., "TOR,WPG,NYR")
 - **mlb_teams**: Comma-separated list of MLB team codes (e.g., "TOR,NYY,BOS")
 - **test_goals**: Enable test goals every minute for testing automations (default: false)
+- **broadcast_delay_seconds**: Hold back everything Goalfeed sends to Home Assistant (goal events and sensors) by this many seconds, so your lights don't go off before the goal is on your TV or stream. 0 turns it off; the maximum is 900 (15 minutes). Measure it once: note when the goal light fires and when the goal appears on screen, and use the difference. Needs Goalfeed 1.0.53 or later (default: 0)
 
 ### Example Configuration
 
@@ -65,6 +66,7 @@ The add-on exposes a REST API on port 8080:
 nhl_teams: "TOR,WPG"
 mlb_teams: "TOR,NYY"
 test_goals: false
+broadcast_delay_seconds: 0
 ```
 
 ## Creating Automations
